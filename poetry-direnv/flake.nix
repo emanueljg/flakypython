@@ -3,46 +3,54 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    poetry-overrides.url = "github:emanueljg/poetry-overrides";
+    poetry-overrides = {
+      url = "github:emanueljg/poetry-overrides";
+      # debug url
+      # url = "path:/home/ejg/poetry-overrides";
+    };
   };
 
-  outputs = inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
-
+  outputs = inputs @ {flake-parts, ...}:
+    flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
-
       ];
 
-      systems = [ 
-        "x86_64-linux" 
+      systems = [
+        "x86_64-linux"
         "aarch64-linux"
         "aarch64-darwin"
         "x86_64-darwin"
       ];
 
-      perSystem = { config, self', inputs', pkgs, system, ... }: 
+      perSystem = {
+        config,
+        self',
+        inputs',
+        pkgs,
+        system,
+        ...
+      }:
         with pkgs; let
           poetryBase = {
             projectDir = ./.;
             python = python311;
-            overrides = inputs.poetry-overrides.overrides;
+            overrides = callPackage inputs.poetry-overrides.overrides {};
           };
         in {
           packages = rec {
             default = packageName;
-            packageName = pkgs.poetry2nix.mkPoetryApplication 
-              (poetryBase // { checkGroups = [ ]; });
+            packageName =
+              pkgs.poetry2nix.mkPoetryApplication
+              (poetryBase // {checkGroups = [];});
           };
           devShells = rec {
             default = packageName;
-            packageName = pkgs.poetry2nix.mkPoetryEnv poetryBase;
+            packageName = (pkgs.poetry2nix.mkPoetryEnv poetryBase).env;
           };
-          formatter = alejandra;
-      };
+          formatter = pkgs.alejandra;
+        };
 
       flake = {
-        
       };
-
     };
 }
