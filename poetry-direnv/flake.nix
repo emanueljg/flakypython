@@ -38,14 +38,14 @@
           };
         in {
           packages = rec {
-            default = packageName;
-            packageName =
+            default = PACKAGE_NAME;
+            PACKAGE_NAME =
               pkgs.poetry2nix.mkPoetryApplication
               (poetryBase // {checkGroups = [];});
           };
           devShells = rec {
-            default = packageName;
-            packageName = (pkgs.poetry2nix.mkPoetryEnv poetryBase).env;
+            default = PACKAGE_NAME;
+            PACKAGE_NAME = (pkgs.poetry2nix.mkPoetryEnv poetryBase).env;
           };
           formatter = pkgs.alejandra;
         };
