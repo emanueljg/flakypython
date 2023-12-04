@@ -37,8 +37,13 @@
             description = "";
           };
 
-          poetryDirenv = {
-            path = ./poetry-direnv;
+          python = {
+            path = ./python;
+            description = "";
+          };
+
+          rust = {
+            path = ./rust;
             description = "";
           };
         };
