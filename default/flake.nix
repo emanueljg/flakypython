@@ -24,10 +24,16 @@
         , pkgs
         , system
         , ...
-        }: {
+        }:
+        let pre-commit = import ./nix/pre-commit.nix { inherit pkgs inputs system self'; }; in {
           formatter = pkgs.nixpkgs-fmt;
-          devShells.default = pkgs.callPackage ./shell.nix { };
-        } // (import ./nix/pre-commit.nix { inherit pkgs inputs system self'; });
+          checks.pre-commit-check = pre-commit.checks.pre-commit-check;
+          devShells.default = pkgs.callPackage ./shell.nix {
+            inputsFrom = [
+              pre-commit.devShells.default
+            ];
+          };
+        };
 
       flake = { };
     };
