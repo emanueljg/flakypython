@@ -19,8 +19,7 @@
       systems = import ./nix/systems.nix;
 
       perSystem =
-        { config
-        , self'
+        { self'
         , pkgs
         , system
         , ...
